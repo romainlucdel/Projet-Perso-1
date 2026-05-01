@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaletteCraft25 – Bois de Palettes Besançon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Nunito:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+<script src="script.js" defer></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<header>
+  <a href="#" class="logo">
+    <div class="logo-icon">🪵</div>
+    <div class="logo-text">
+      <strong>PaletteCraft25</strong>
+      <span>Besançon · Doubs · Éco-local</span>
+    </div>
+  </a>
+
+  <nav>
+    <a href="#produits">Palettes & Planches</a>
+    <a href="#plans">Plans DIY</a>
+    <a href="#quincaillerie">Quincaillerie</a>
+    <a href="#local">Notre Histoire</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="header-right">
+    <!-- État non connecté -->
+    <div class="auth-guest" id="authGuest">
+      <button class="auth-btn" onclick="openLogin()">
+        <span class="auth-btn-icon">👤</span>
+        <span class="auth-btn-label">Connexion</span>
+      </button>
+    </div>
+
+    <!-- État connecté (masqué par défaut) -->
+    <div class="auth-user" id="authUser" style="display:none">
+      <div class="user-chip" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <span class="user-email-short" id="userEmailShort">User</span>
+        <svg class="chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <div class="user-menu" id="userMenu">
+        <div class="user-menu-email" id="userMenuEmail"></div>
+        <div class="user-menu-divider"></div>
+        <button class="user-menu-item logout" onclick="logout()">
+          <span>🚪</span> Déconnexion
+        </button>
+      </div>
+    </div>
+
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 <span>Mon panier</span>
+      <div class="cart-count" id="cartCount">0</div>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#produits" onclick="toggleMobileNav()">🪵 Palettes & Planches</a>
+  <a href="#plans" onclick="toggleMobileNav()">📐 Plans DIY</a>
+  <a href="#quincaillerie" onclick="toggleMobileNav()">🔩 Quincaillerie</a>
+  <a href="#local" onclick="toggleMobileNav()">🌿 Notre Histoire</a>
+  <a href="#contact" onclick="toggleMobileNav()">📬 Contact</a>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AUTH MODAL (Login + Register)
+══════════════════════════════════════════ -->
+<div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+  <div class="auth-modal" id="authModal">
+
+    <!-- En-tête modale -->
+    <div class="auth-modal-header">
+      <div class="auth-modal-brand">
+        <span class="auth-brand-icon">🪵</span>
+        <div>
+          <strong>PaletteCraft25</strong>
+          <span>Votre espace personnel</span>
+        </div>
+      </div>
+      <button class="auth-modal-close" onclick="closeLogin()">✕</button>
+    </div>
+
+    <!-- Onglets -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Se connecter</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+      <div class="auth-tab-indicator" id="tabIndicator"></div>
+    </div>
+
+    <!-- Formulaire Connexion -->
+    <div class="auth-form" id="formLogin">
+      <div class="auth-field">
+        <label>Adresse e-mail</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✉️</span>
+          <input type="email" id="loginEmail" placeholder="vous@exemple.fr" autocomplete="email">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Mot de passe</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+            <div class="password-wrapper">
+              <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
+              <span class="toggle-eye" onclick="togglePassword('loginPassword', this)"> 
+              <svg class="eye-open" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+              </svg>
+
+              <svg class="eye-closed" viewBox="0 0 24 24">
+              <path d="M1 1l22 22"/>
+              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.77 21.77 0 0 1 5.06-6.94"/>
+              </svg>
+              </span>
+            </div>
+        </div>
+      </div>
+      <button class="auth-submit" onclick="login()">
+        <span>Se connecter</span>
+        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="auth-switch-hint">Pas encore de compte ? <button onclick="switchTab('register')">Créer un compte →</button></p>
+    </div>
+
+    <!-- Formulaire Inscription -->
+    <div class="auth-form hidden" id="formRegister">
+      <div class="auth-field">
+        <label>Adresse e-mail</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✉️</span>
+          <input type="email" id="registerEmail" placeholder="vous@exemple.fr" autocomplete="email">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Mot de passe</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <div class="password-wrapper">
+              <input type="password" id="registerPassword" placeholder="Mot de passe" autocomplete="current-password">
+              <span class="toggle-eye" onclick="togglePassword('registerPassword', this)"> 
+              <svg class="eye-open" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+              </svg>
+
+              <svg class="eye-closed" viewBox="0 0 24 24">
+              <path d="M1 1l22 22"/>
+              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.77 21.77 0 0 1 5.06-6.94"/>
+              </svg>
+              </span>
+            </div>
+        </div>
+      </div>
+      <button class="auth-submit" onclick="register()">
+        <span>Créer mon compte</span>
+        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="auth-switch-hint">Déjà un compte ? <button onclick="switchTab('login')">Se connecter →</button></p>
+    </div>
+
+    <!-- Pied de modale -->
+    <div class="auth-modal-footer">
+      <span>🔒 Connexion 100% sécurisée</span>
+      <span>·</span>
+      <span>🌿 Local Besançon</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero wood-grain" id="accueil">
+  <div class="hero-planks" aria-hidden="true">
+    <div class="hero-plank"></div><div class="hero-plank"></div>
+    <div class="hero-plank"></div><div class="hero-plank"></div>
+    <div class="hero-plank"></div><div class="hero-plank"></div>
+    <div class="hero-plank"></div><div class="hero-plank"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">♻️ Artisan local · Besançon · Doubs 25</div>
+    <h1>Du bois de <em>palette</em>,<br>des projets sans limites</h1>
+    <p>Planches brutes, palettes complètes, kits personnalisés et plans de montage pour construire vous-même vos meubles. Local, durable, créatif.</p>
+    <div class="hero-ctas">
+      <a href="#produits" class="btn btn-primary">🪵 Découvrir les produits</a>
+      <a href="#plans" class="btn btn-outline">📐 Plans DIY gratuits</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>100%</strong><span>Bois recyclé</span></div>
+      <div class="hero-stat"><strong>25 km</strong><span>Rayon local</span></div>
+      <div class="hero-stat"><strong>5</strong><span>Plans DIY offerts</span></div>
+      <div class="hero-stat"><strong>+200</strong><span>Références</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BAR -->
+<div class="features-bar">
+  <div class="feature-item"><div class="icon">♻️</div><div><strong>Zéro déchet</strong><span>Palettes récupérées localement</span></div></div>
+  <div class="feature-item"><div class="icon">📍</div><div><strong>Made in Besançon</strong><span>Doubs 25000 France</span></div></div>
+  <div class="feature-item"><div class="icon">✏️</div><div><strong>Personnalisation</strong><span>Gravure, peinture, découpe sur mesure</span></div></div>
+  <div class="feature-item"><div class="icon">🚚</div><div><strong>Livraison </strong><span>France metropolitaine</span></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRODUITS
+══════════════════════════════════════════ -->
+<section id="produits">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Catalogue produits</div>
+      <h2>Palettes, planches & kits</h2>
+      <p>Du bois de palette sélectionné, préparé à Besançon. Brut, raboté, peint ou gravé à la demande.</p>
+    </div>
+
+    <div class="filter-tabs reveal">
+      <button class="filter-tab active" onclick="filterProducts('all', this)">Tout voir</button>
+      <button class="filter-tab" onclick="filterProducts('palette', this)">Palettes complètes</button>
+      <button class="filter-tab" onclick="filterProducts('kit', this)">Kits & demi-palettes</button>
+      <button class="filter-tab" onclick="filterProducts('planche', this)">Planches & lots</button>
+      <button class="filter-tab" onclick="filterProducts('perso', this)">Personnalisation</button>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+
+    <div class="custom-banner reveal" style="margin-top:3rem">
+      <div class="custom-banner-text">
+        <h3>🎨 Vous avez un projet spécifique ?</h3>
+        <p>Gravure, peinture sur mesure, découpe aux côtes précises — contactez-nous pour un devis personnalisé. Livraison à Besançon ou retrait à l'atelier.</p>
+      </div>
+      <a href="#contact" class="btn btn-kraft">✉️ Demander un devis</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PLANS DIY
+══════════════════════════════════════════ -->
+<section id="plans">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Plans de montage gratuits</div>
+      <h2>Construisez vous-même !</h2>
+      <p>5 plans détaillés avec côtes précises, liste de matériaux et étapes pas à pas. Téléchargeables ou à consulter en ligne.</p>
+    </div>
+    <div class="plans-grid" id="plansGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     QUINCAILLERIE
+══════════════════════════════════════════ -->
+<section id="quincaillerie">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Quincaillerie & outillage</div>
+      <h2>Tout le nécessaire pour bricoler</h2>
+      <p>Visserie, équerres, roulettes, outillage de base — sélection pensée pour vos projets palette.</p>
+    </div>
+    <div class="hardware-grid" id="hardwareGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     LOCAL
+══════════════════════════════════════════ -->
+<section id="local">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">// Notre engagement</div>
+      <h2>Né à Besançon, fait pour durer</h2>
+      <p>Un atelier local au cœur du Doubs, des palettes récupérées dans un rayon de 25 km, et la passion du bois recyclé.</p>
+    </div>
+
+    <div class="local-grid reveal">
+      <div class="local-card"><div class="icon">🌲</div><h3>Bois 100% recyclé</h3><p>Toutes nos palettes sont récupérées localement auprès d'entreprises bisontines avant d'être triées, nettoyées et transformées.</p></div>
+      <div class="local-card"><div class="icon">🔨</div><h3>Atelier artisanal</h3><p>Chaque planche passe entre nos mains. Rabotage, ponçage, gravure laser — un travail soigné réalisé dans notre atelier de Besançon.</p></div>
+      <div class="local-card"><div class="icon">🤝</div><h3>Implication locale</h3><p>Partenariats avec les ressourceries, les associations de quartier et les écoles de Besançon pour des ateliers DIY ouverts à tous.</p></div>
+    </div>
+
+    <div class="local-address reveal">
+      <div class="address">
+        <strong>🏭 Atelier PaletteCraft25</strong>
+        <p>3 Chemin du bois saint Paul<br>25000 Besançon, Doubs<br><br>
+        📞 07 67 69 21 04<br>
+        ✉️ contact@palettecraft25.fr<br><br>
+        🕒 Lun–Ven: 9h–18h · Sam: 9h–13h</p>
+      </div>
+      <div class="map-placeholder">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102821.61393020737!2d5.950802518792329!3d47.24001632695265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478d62faf0ee130b%3A0x409ce34b313ed30!2s25000%20Besan%C3%A7on!5e1!3m2!1sfr!2sfr!4v1776431398287!5m2!1sfr!2sfr"
+         width="350" height="200" style="border:0; border-radius: 5px"
+         allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <span>Besançon, Doubs 25</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     NEWSLETTER
+══════════════════════════════════════════ -->
+<div class="newsletter-section" id="contact">
+  <h2>🌿 Restez dans la boucle</h2>
+  <p>Nouvelles arrivées, promotions, ateliers DIY à Besançon — inscrivez-vous !</p>
+  <form class="newsletter-form" onsubmit="submitNewsletter(event)">
+    <input type="email" placeholder="Votre adresse e-mail" required>
+    <button type="submit">S'inscrire</button>
+  </form>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-icon">🪵</div>
+        <div class="logo-text">
+          <strong>PaletteCraft25</strong>
+          <span>Besançon · Doubs</span>
+        </div>
+      </a>
+      <p style="margin-top:1rem;font-size:.85rem;color:#6b5540">Artisan du bois recyclé, basé à Besançon depuis 2025. Palettes, planches, kits et créations sur mesure.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Catalogue</h4>
+      <ul>
+        <li><a href="#produits">Palettes complètes</a></li>
+        <li><a href="#produits">Kits démontés</a></li>
+        <li><a href="#produits">Planches au détail</a></li>
+        <li><a href="#produits">Lots & packs</a></li>
+        <li><a href="#produits">Personnalisation</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>DIY & Infos</h4>
+      <ul>
+        <li><a href="#plans">Plan table basse</a></li>
+        <li><a href="#plans">Plan étagère</a></li>
+        <li><a href="#plans">Plan canapé palette</a></li>
+        <li><a href="#plans">Plan lit double</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="contact-info">
+        3 Chemin du bois saint Paul<br>
+        25000 Besançon, Doubs<br><br>
+        📞 07 67 69 21 04<br>
+        ✉️ contact@palettecraft25.fr<br><br>
+        🕒 Lun–Ven: 9h–18h<br>
+        Sam: 9h–13h
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 PaletteCraft25 — Artisan à Besançon · Mentions légales · CGV · RGPD</p>
+    <div class="eco-badges">
+      <span class="eco-badge">♻️ Éco-responsable</span>
+      <span class="eco-badge">🌿 Local Doubs 25</span>
+      <span class="eco-badge">🔒 Paiement sécurisé</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     CART SIDEBAR
+══════════════════════════════════════════ -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-sidebar-header">
+    <h3>🛒 Mon Panier</h3>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <div class="icon">🛒</div>
+      <p>Votre panier est vide</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal"><span>Sous-total</span><span id="cartSubtotal">0,00 €</span></div>
+    <div class="cart-subtotal"><span>Livraison en france metropolitaine</span><span style="color:var(--green);font-weight:700">Gratuite a partir de 100 euro d achat</span></div>
+    <div class="cart-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
+    <button class="checkout-btn" onclick="openCheckout()">
+      <span class="paypal-logo">💳</span> Payer par PayPal
+    </button>
+    <p class="secure-note">🔒 Paiement 100% sécurisé via PayPal</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PLAN MODAL
+══════════════════════════════════════════ -->
+<div class="plan-modal-overlay" id="planModal">
+  <div class="plan-modal">
+    <div class="plan-modal-header">
+      <h2 id="modalTitle">Plan de montage</h2>
+      <button class="modal-close" onclick="closePlanModal()">✕</button>
+    </div>
+    <div class="plan-modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHECKOUT MODAL
+══════════════════════════════════════════ -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-modal">
+    <div class="checkout-modal-header">
+      <h3>💳 Finaliser la commande</h3>
+      <button class="modal-close" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="checkout-modal-body">
+      <div class="order-summary">
+        <h4>Récapitulatif</h4>
+        <div id="orderSummaryLines"></div>
+      </div>
+      <div class="paypal-btn-container">
+        <div id="paypal-button-container"></div>
+        <button class="paypal-fallback" onclick="simulatePayment()">
+          💳 Payer avec PayPal — <span id="checkoutTotalDisplay">0,00 €</span>
+        </button>
+        <div class="payment-icons">
+          <span class="payment-icon">💳 Visa</span>
+          <span class="payment-icon">💳 Mastercard</span>
+          <span class="payment-icon">🅿️ PayPal</span>
+          <span class="payment-icon">🔒 SSL</span>
+        </div>
+        <p class="secure-note" style="margin-top:.5rem">Vos données bancaires ne transitent jamais sur nos serveurs</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <h3>Commande confirmée !</h3>
+    <p>Merci pour votre commande. Vous recevrez une confirmation par e-mail. Retrait à l'atelier ou en livraison.</p>
+    <button class="btn btn-primary" onclick="closeSuccess()" style="width:100%;justify-content:center;margin-top:.5rem">Continuer mes achats</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ <span id="toastMsg">Ajouté au panier</span></div>
+
+</body>
+</html>
